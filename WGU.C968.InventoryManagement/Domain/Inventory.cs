@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace WGU.C968.InventoryManagement.Models
+namespace WGU.C968.InventoryManagement.Domain
 {
-    public class Inventory
+    public class Inventory : INotifyPropertyChanged
     {
-        public static BindingList<Product> Products = new BindingList<Product>();
-        public static BindingList<Part> Parts = new BindingList<Part>();
+        public BindingList<Product> Products = new BindingList<Product>();
+        public BindingList<Part> Parts = new BindingList<Part>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Inventory(bool seedInitialInventory = true)
         {
@@ -137,6 +139,16 @@ namespace WGU.C968.InventoryManagement.Models
                 Min = 1,
                 Max = 20,
                 CompanyName = "ACME Part Co."
+            });
+
+            Products.Add(new Product
+            {
+                ProductId = 1,
+                Name = "Widget",
+                Price = 15.76m,
+                InStock = true,
+                Min = 100,
+                Max = 1000
             });
         }
     }

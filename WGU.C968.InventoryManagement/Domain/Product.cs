@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace WGU.C968.InventoryManagement.Models
+namespace WGU.C968.InventoryManagement.Domain
 {
     public class Product
     {

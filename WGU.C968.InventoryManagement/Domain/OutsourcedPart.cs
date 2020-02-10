@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WGU.C968.InventoryManagement.Models
+namespace WGU.C968.InventoryManagement.Domain
 {
     public class OutsourcedPart : Part
     {
