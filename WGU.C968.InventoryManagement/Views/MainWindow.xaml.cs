@@ -58,7 +58,7 @@ namespace WGU.C968.InventoryManagement.Views
             var partId = GetPartIds(Model.Parts).GetNextId();
             AddEditPart addPartWindow = new AddEditPart(partId, Model);
             addPartWindow.Owner = Window.GetWindow(this);
-            Application.Current.MainWindow.Opacity = 0.75;
+            Opacity = 0.75;
             addPartWindow.ShowDialog();
         }
 
@@ -68,7 +68,7 @@ namespace WGU.C968.InventoryManagement.Views
             {
                 AddEditPart modifyPartWindow = new AddEditPart(SelectedPart.PartId, Model);
                 modifyPartWindow.Owner = Window.GetWindow(this);
-                Application.Current.MainWindow.Opacity = 0.75;
+                Opacity = 0.75;
                 modifyPartWindow.ShowDialog();
             }
             else
@@ -122,7 +122,13 @@ namespace WGU.C968.InventoryManagement.Views
         {
             AddEditProduct addProductWindow = new AddEditProduct();
             addProductWindow.Owner = Window.GetWindow(this);
-            addProductWindow.Show();
+            Opacity = 0.75;
+            addProductWindow.ShowDialog();
+        }
+
+        private void ModifyProductButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         // MainWindow Actions

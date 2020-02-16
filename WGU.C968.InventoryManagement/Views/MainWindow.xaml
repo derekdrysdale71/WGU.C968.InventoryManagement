@@ -60,7 +60,7 @@
                 <DataGridTextColumn Header="Max" Binding="{Binding Max}" IsReadOnly="True" Width="50" />
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Add" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,135,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Button Content="Add" Click="AddProductButton_Click" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,135,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
         <Button Content="Modify" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,75,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
         <Button Content="Delete" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,15,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
 
