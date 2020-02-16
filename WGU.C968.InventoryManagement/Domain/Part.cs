@@ -12,7 +12,7 @@ namespace WGU.C968.InventoryManagement.Domain
 
         public decimal Price { get; set; }
 
-        public bool InStock { get; set; }
+        public int InStock { get; set; }
 
         public int Min { get; set; }
 
