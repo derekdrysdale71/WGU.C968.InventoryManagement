@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace WGU.C968.InventoryManagement.Domain
 {
     public class Inventory : INotifyPropertyChanged
     {
-        public BindingList<Product> Products = new BindingList<Product>();
-        public BindingList<Part> Parts = new BindingList<Part>();
+        private List<Part> _parts = new List<Part>();
+        private List<Product> _products = new List<Product>();
+
+        public IEnumerable<Part> Parts => _parts.Where(p => p.Name.Contains(PartSearchTerm ?? "", StringComparison.CurrentCultureIgnoreCase));
+        public IEnumerable<Product> Products => _products.Where(p => p.Name.Contains(ProductSearchTerm ?? "", StringComparison.CurrentCultureIgnoreCase));
+
+        public string PartSearchTerm { get; set; }
+        public string ProductSearchTerm { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         public Inventory(bool seedInitialInventory = true)
         {
@@ -27,7 +36,7 @@ namespace WGU.C968.InventoryManagement.Domain
         public void AddProduct(Product product)
         {
             // TODO: Validate product first?
-            Products.Add(product);
+            _products.Add(product);
         }
 
         public bool RemoveProduct(int productId)
@@ -37,13 +46,13 @@ namespace WGU.C968.InventoryManagement.Domain
 
             // TODO: Check for associated parts
 
-            Products.Remove(productToRemove);
+            _products.Remove(productToRemove);
             return true;
         }
 
         public Product LookupProduct(int productId)
         {
-            var product = Products.Where(p => p.ProductId == productId).FirstOrDefault();
+            var product = _products.Where(p => p.ProductId == productId).FirstOrDefault();
 
             if (product == null) 
                 throw new Exception(message: $"A product with ID #{productId} could not be found.");
@@ -53,7 +62,7 @@ namespace WGU.C968.InventoryManagement.Domain
 
         public void UpdateProduct(int productId, Product product)
         {
-            var productToUpdate = Products.Where(p => p.ProductId == productId).FirstOrDefault();
+            var productToUpdate = _products.Where(p => p.ProductId == productId).FirstOrDefault();
 
             if (productToUpdate == null)
                 throw new Exception(message: $"A product with ID #{productId} could not be found.");
@@ -70,7 +79,7 @@ namespace WGU.C968.InventoryManagement.Domain
         public void AddPart(Part part)
         {
             // TODO: Validate part first?
-            Parts.Add(part);
+            _parts.Add(part);
         }
 
         public bool DeletePart(Part part)
@@ -78,23 +87,23 @@ namespace WGU.C968.InventoryManagement.Domain
             var partToDelete = Parts.Where(p => p.PartId == part.PartId).FirstOrDefault();
             if (partToDelete == null) return false;
 
-            Parts.Remove(part);
+            _parts.Remove(part);
             return true;
         }
 
         public Part LookupPart(int partId)
         {
-            var part = Parts.Where(p => p.PartId == partId).FirstOrDefault();
+            var part = _parts.Where(p => p.PartId == partId).FirstOrDefault();
 
-            if (part == null)
-                throw new Exception(message: $"A part with ID #{partId} could not be found.");
+            /*if (part == null)
+                throw new Exception(message: $"A part with ID #{partId} could not be found.");*/
 
             return part;
         }
 
         public void UpdatePart(int partId, Part part)
         {
-            var partToUpdate = Parts.Where(p => p.PartId == partId).FirstOrDefault();
+            var partToUpdate = _parts.Where(p => p.PartId == partId).FirstOrDefault();
 
             if (partToUpdate == null)
                 throw new Exception(message: $"A part with ID #{partId} could not be found.");
@@ -108,48 +117,50 @@ namespace WGU.C968.InventoryManagement.Domain
 
         private void SeedInventory()
         {
-            Parts.Add(new InhousePart
+            _parts.Add(new InhousePart
             {
                 PartId = 1,
                 Name = "Whatchamacallit",
                 Price = 3.01m,
-                InStock = true,
+                InStock = 4,
                 Min = 1,
                 Max = 10,
                 MachineId = 1
             });
 
-            Parts.Add(new OutsourcedPart
+            _parts.Add(new OutsourcedPart
             {
                 PartId = 2,
                 Name = "Thingamajigger",
                 Price = 7.52m,
-                InStock = true,
+                InStock = 13,
                 Min = 1,
                 Max = 20,
                 CompanyName = "ACME Part Co."
             });
 
-            Parts.Add(new OutsourcedPart
+            _parts.Add(new OutsourcedPart
             {
                 PartId = 3,
                 Name = "Doohickey",
                 Price = 4.07m,
-                InStock = true,
+                InStock = 9,
                 Min = 1,
                 Max = 20,
                 CompanyName = "ACME Part Co."
             });
 
-            Products.Add(new Product
+            _products.Add(new Product
             {
                 ProductId = 1,
                 Name = "Widget",
                 Price = 15.76m,
-                InStock = true,
+                InStock = 506,
                 Min = 100,
                 Max = 1000
             });
         }
+
+        
     }
 }
