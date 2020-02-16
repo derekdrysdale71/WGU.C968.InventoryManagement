@@ -3,32 +3,159 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:WGU.C968.InventoryManagement.Helpers"
         xmlns:local="clr-namespace:WGU.C968.InventoryManagement.Views"
         mc:Ignorable="d"
-        Title="Part" Height="400" Width="400" WindowStartupLocation="CenterOwner">
-    <Grid>
+        d:DesignHeight="425"
+        d:DesignWidth="400"
+        Title="Part" Height="425" Width="400" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Window.Resources>
+        <helpers:BoolToLabelTextConverter x:Key="BoolToLabelTextConverter" />
+        <ControlTemplate x:Key="validationErrorTemplate">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                    <TextBlock Foreground="Red" FontWeight="Medium" 
+                        Text="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                    </TextBlock>
+                </StackPanel>
+                <AdornedElementPlaceholder x:Name="ErrorAdorner"></AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="ErrorTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="bg" BorderBrush="#FF825E5E" BorderThickness="1">
+                            <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Validation.HasError" Value="True">
+                                <Trigger.Setters>
+                                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},Path=(Validation.Errors)[0].ErrorContent}"/>
+                                    <Setter Property="BorderThickness" TargetName="bg" Value="1"/>
+                                    <Setter Property="BorderBrush" TargetName="bg" Value="Red"/>
+                                </Trigger.Setters>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextBoxLabelStyle" TargetType="Label">
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+    </Window.Resources>
+    <StackPanel >
+        <Grid Height="35">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="75" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Add Part" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" />
+            <RadioButton Content="In-House" IsChecked="True" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <RadioButton Content="Outsourced" IsChecked="{Binding IsOutsourced}" Grid.Column="2"  HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        </Grid>
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125" />
+                <ColumnDefinition Width="135" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Label Content="Part ID" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox Text="{Binding PartId}" IsReadOnly="True" IsEnabled="False" Name="PartIdTextBox" TextWrapping="Wrap"
+                     Width="50" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0"/>
 
-        <Label Content="Add Part" HorizontalAlignment="Left" Margin="19,16,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="0.577,0.35"/>
-        <RadioButton Content="In-House" HorizontalAlignment="Left" Margin="110,23,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="Outsourced" HorizontalAlignment="Left" Margin="202,23,0,0" VerticalAlignment="Top"/>
+            <Label Content="Name" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox 
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="NameTextBox" Width="125" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-        <Label Content="Part ID" HorizontalAlignment="Right" Margin="0,82,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="PartIdTextBox" HorizontalAlignment="Left" Margin="126,86,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Name" HorizontalAlignment="Right" Margin="0,123,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="NameTextBox" HorizontalAlignment="Left" Margin="126,127,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Inventory" HorizontalAlignment="Right" Margin="0,161,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="InventoryTextBox" HorizontalAlignment="Left" Margin="126,165,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Price/Cost" HorizontalAlignment="Right" Margin="0,203,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="PriceTextBox" HorizontalAlignment="Left" Margin="126,207,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Max" HorizontalAlignment="Right" Margin="0,243,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="MaxTextBox" HorizontalAlignment="Left" Margin="126,247,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="75"/>
-        <Label Content="Min" HorizontalAlignment="Right" Margin="0,243,125,0" VerticalAlignment="Top"/>
-        <TextBox Name="MinTextBox" HorizontalAlignment="Left" Margin="305,247,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="75"/>
-        <Label Content="Label" HorizontalAlignment="Right" Margin="0,285,317,0" VerticalAlignment="Top"/>
-        <TextBox Name="DescriptiveTextBox" HorizontalAlignment="Left" Margin="126,289,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            <Label Content="Inventory" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox 
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="InventoryTextBox" Width="50" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartCount" UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-        <Button Content="Save" Name="SaveButton" HorizontalAlignment="Left" Margin="210,0,0,18" VerticalAlignment="Bottom" Width="75"/>
-        <Button Content="Cancel" Click="CancelButton_Click" Name="CancelButton" HorizontalAlignment="Right" Margin="0,0,20,18" VerticalAlignment="Bottom" Width="75" RenderTransformOrigin="0.479,-2.553"/>
+            <Label Content="Price/Cost" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="PriceTextBox" Width="50" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartCost" UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-    </Grid>
+            <Label Content="Max" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="MaxTextBox" Width="50" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartMax" UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Content="Min" Style="{StaticResource TextBoxLabelStyle}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox 
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="MinTextBox" Width="50" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartMin" UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Content="{Binding IsOutsourced, Converter={StaticResource BoolToLabelTextConverter}, FallbackValue='Company Name'}"
+                   Style="{StaticResource TextBoxLabelStyle}" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0"/>
+            <TextBox
+                Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                Style="{StaticResource ErrorTextBoxStyle}"
+                Name="VariableTextBox" Width="125" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0">
+                <TextBox.Text>
+                    <Binding
+                        Path="PartVariableValue" UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </Grid>
+        <Grid Height="45">
+            <Button Content="Save" Click="SaveButton_Click" Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="0,0,95,0"/>
+            <Button Content="Cancel" Click="CancelButton_Click" Name="CancelButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="0,0,10,0"/>
+        </Grid>
+    </StackPanel>
 </Window>

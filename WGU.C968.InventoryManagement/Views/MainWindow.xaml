@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:WGU.C968.InventoryManagement.Views"
         mc:Ignorable="d"
         Title="Main Screen" Height="575" Width="1020" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="DataGridStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <Setter Property="Height" Value="25" />
+        </Style>
+    </Window.Resources>
     <Grid Height="530">
         <Grid.RowDefinitions>
             <RowDefinition Height="75"/>
@@ -17,25 +23,49 @@
             <ColumnDefinition Width="510*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Inventory Management System" HorizontalAlignment="Left" Grid.Row="0" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Height="34" Width="275"/>
-        <Button Content="Exit" Name="ExitButton" Click="ExitButton_Click" HorizontalAlignment="Right" Grid.Row="2" Margin="0,15,10,38" FontSize="14" Width="60" Grid.Column="1"/>
+        <Button Content="Exit" Name="ExitButton" Click="ExitButton_Click" HorizontalAlignment="Right" Grid.Row="2" Margin="0,20,15,33" FontSize="14" Width="60" Grid.Column="1"/>
 
         <Label Content="Parts" Name="PartsLabel" HorizontalAlignment="Left" Grid.Row="1" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="DemiBold"/>
-        <Button Content="Search" Click="PartSearchButton_Click" HorizontalAlignment="Left" Margin="262,16,0,0" Grid.Row="1" VerticalAlignment="Top" Width="50"/>
-        <TextBox x:Name="PartSearchTextBox" HorizontalAlignment="Left" Margin="320,16,0,0" Grid.Row="1" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="175" Height="20"/>
-        <DataGrid Name="PartsDataGrid" DataContext="{Binding Path=Parts}" Grid.Row="1" Margin="15,46,15,50"/>
-        <Button Content="Add" Name="AddPartButton" Click="AddPartButton_Click" HorizontalAlignment="Left" Grid.Row="1" Margin="321,361,0,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-        <Button Content="Modify" Name="ModifyPartButton" HorizontalAlignment="Left" Grid.Row="1" Margin="383,361,0,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-        <Button Content="Delete" Name="DeletePartButton" HorizontalAlignment="Left" Grid.Row="1" Margin="445,361,0,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Label Content="Search" HorizontalAlignment="Right" Margin="0,13,200,0" Grid.Row="1" VerticalAlignment="Top" FontSize="13" FontWeight="Medium"/>
+        <TextBox Text="{Binding Path=Model.PartSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="PartSearchTextBox_TextChanged"
+                 Name="PartSearchTextBox" HorizontalAlignment="Right" Margin="0,16,15,0" Grid.Row="1" VerticalAlignment="Top" Width="175" Height="20"
+                 Template="{StaticResource PlaceholderTextBox}" Tag="Start typing to search..."/>
+        <DataGrid ItemsSource="{Binding Parts}" SelectedItem="{Binding SelectedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended" SelectionUnit="FullRow" AutoGenerateColumns="False" Name="PartsDataGrid" Grid.Row="1" Margin="15,46,15,50" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Part ID" Binding="{Binding PartId}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn Header="Inventory" Binding="{Binding InStock}" IsReadOnly="True" Width="65" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" Width="50" />
+                <DataGridTextColumn Header="Min" Binding="{Binding Min}" IsReadOnly="True" Width="50" />
+                <DataGridTextColumn Header="Max" Binding="{Binding Max}" IsReadOnly="True" Width="50" />
+            </DataGrid.Columns>
+
+        </DataGrid>
+        <Button Content="Add" Name="AddPartButton" Click="AddPartButton_Click" HorizontalAlignment="Right" Grid.Row="1" Margin="0,361,135,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Button Content="Modify" Click="ModifyPartButton_Click" Name="ModifyPartButton" HorizontalAlignment="Right" Grid.Row="1" Margin="0,361,75,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Button Content="Delete" Click="DeletePartButton_Click" Name="DeletePartButton" HorizontalAlignment="Right" Grid.Row="1" Margin="0,361,15,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
 
         <Label Content="Products" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="DemiBold"/>
-        <Button Content="Search" Name="ProductSearchButton" Click="ProductSearchButton_Click" Margin="0,16,195,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50"/>
-        <TextBox Name="ProductSearchTextBox" HorizontalAlignment="Right" Margin="0,16,15,0" Grid.Column="1" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="175" Height="20" Grid.Row="1"/>
-        <DataGrid Name="ProductsDataGrid" DataContext="{Binding Path=Parts}" Grid.Row="1" Grid.Column="1" Margin="15,46,15,50"/>
-        <Button Content="Add" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Margin="321,361,0,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-        <Button Content="Modify" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Margin="383,361,0,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Label Content="Search" HorizontalAlignment="Right" Margin="0,13,200,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" FontSize="13" FontWeight="Medium"/>
+        <TextBox Text="{Binding Path=Model.ProductSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="ProductSearchTextBox_TextChanged"
+                 Name="ProductSearchTextBox" HorizontalAlignment="Right" Margin="0,16,15,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="175" Height="20"
+                 Template="{StaticResource PlaceholderTextBox}" Tag="Start typing to search..."/>
+        <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False" Name="ProductsDataGrid" Grid.Row="1" Grid.Column="1" Margin="15,46,15,50">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" IsReadOnly="True" Width="Auto" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn Header="Inventory" Binding="{Binding InStock}" IsReadOnly="True" Width="65" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" Width="50" />
+                <DataGridTextColumn Header="Min" Binding="{Binding Min}" IsReadOnly="True" Width="50" />
+                <DataGridTextColumn Header="Max" Binding="{Binding Max}" IsReadOnly="True" Width="50" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Add" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,135,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Button Content="Modify" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,75,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
         <Button Content="Delete" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,15,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
 
 
 
     </Grid>
+
 </Window>

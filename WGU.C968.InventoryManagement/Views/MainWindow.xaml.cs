@@ -1,93 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WGU.C968.InventoryManagement.Domain;
+using WGU.C968.InventoryManagement.Helpers;
 
 namespace WGU.C968.InventoryManagement.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public Inventory Model { get; set; }
+        public Part SelectedPart { get; set; }
+        public Product SelectedProduct { get; set; }
+        public ObservableCollection<Part> Parts
+        {
+            get { return _parts; }
+            set { _parts = value; OnPropertyChanged(nameof(Parts)); }
+        }
+
+        public ObservableCollection<Product> Products
+        {
+            get { return _products; }
+            set { _products = value; OnPropertyChanged(nameof(Products)); }
+        }
+
+        private ObservableCollection<Part> _parts;
+        private ObservableCollection<Product> _products;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
 
-            var model = new Inventory();
-
-            this.DataContext = model;
-
-            PartsDataGrid.ItemsSource = model.Parts;
-            ProductsDataGrid.ItemsSource = model.Products;
+            Model = new Inventory();
+            GetUpdatedParts();
+            GetUpdatedProducts();
         }
 
         // Part Actions
-        private void PartSearchButton_Click(object sender, RoutedEventArgs e)
+        private void PartSearchTextBox_TextChanged(object sender, RoutedEventArgs e)
         {
-            if (PartSearchTextBox.Text != "")
-            {
-                try
-                {
-                    
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("No part matches that search value.", "Result Error", MessageBoxButton.OK);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please enter a value to search for.", "Search Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            GetUpdatedParts();
         }
 
         private void AddPartButton_Click(object sender, RoutedEventArgs e)
         {
-            AddEditPart addPartWindow = new AddEditPart();
+            var partId = GetPartIds(Model.Parts).GetNextId();
+            AddEditPart addPartWindow = new AddEditPart(partId, Model);
             addPartWindow.Owner = Window.GetWindow(this);
-            addPartWindow.Show();
+            Application.Current.MainWindow.Opacity = 0.75;
+            addPartWindow.ShowDialog();
         }
 
         private void ModifyPartButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SelectedPart != null)
+            {
+                AddEditPart modifyPartWindow = new AddEditPart(SelectedPart.PartId, Model);
+                modifyPartWindow.Owner = Window.GetWindow(this);
+                Application.Current.MainWindow.Opacity = 0.75;
+                modifyPartWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(
+                    "You must select a part to modify.",
+                    "No Part Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
         }
 
         private void DeletePartButton_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        // Product Actions
-        private void ProductSearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ProductSearchTextBox.Text != "")
+            if (SelectedPart != null)
             {
-                try
+                var confirm = MessageBox.Show(
+                    "Are you sure you want to delete this part?  This can't be undone.", 
+                    "Warning",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning
+                );
+
+                if (confirm == MessageBoxResult.OK)
                 {
 
+                    Model.DeletePart(SelectedPart);
+                    GetUpdatedParts();
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("No product matches that search value.", "Result Error", MessageBoxButton.OK);
-                }
+                else return;
             }
             else
             {
-                MessageBox.Show("Please enter a value to search for.", "Search Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "You must select a part to delete.",
+                    "No Part Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
             }
+        }
+
+        // Product Actions
+        private void ProductSearchTextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            GetUpdatedProducts();
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
@@ -101,6 +129,26 @@ namespace WGU.C968.InventoryManagement.Views
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private List<int> GetPartIds(IEnumerable<Part> parts)
+        {
+            return parts.Select(p => p.PartId).ToList();
+        }
+
+        private List<int> GetProductIds(ObservableCollection<Product> products)
+        {
+            return products.Select(p => p.ProductId).ToList();
+        }
+
+        public void GetUpdatedParts()
+        {
+            Parts = new ObservableCollection<Part>(Model.Parts);
+        }
+
+        public void GetUpdatedProducts()
+        {
+            Products = new ObservableCollection<Product>(Model.Products);
         }
     }
 }
