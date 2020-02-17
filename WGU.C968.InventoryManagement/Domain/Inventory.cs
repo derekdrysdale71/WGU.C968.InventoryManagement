@@ -101,11 +101,12 @@ namespace WGU.C968.InventoryManagement.Domain
             if (partToUpdate == null)
                 throw new Exception(message: $"A part with ID #{partId} could not be found.");
 
-            partToUpdate.Name = part.Name;
-            partToUpdate.Price = part.Price;
-            partToUpdate.InStock = part.InStock;
-            partToUpdate.Min = part.Min;
-            partToUpdate.Max = part.Max;
+            var index = _parts.IndexOf(partToUpdate);
+
+            if (index != -1)
+            {
+                _parts[index] = part;
+            }
         }
 
         private void SeedInventory()
