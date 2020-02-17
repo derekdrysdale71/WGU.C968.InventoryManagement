@@ -50,6 +50,21 @@ namespace WGU.C968.InventoryManagement.Views
             set { _isOutsourced = value; OnPropertyChanged(nameof(IsOutsourced)); OnPropertyChanged(nameof(PartVariableValue)); } 
         }
 
+        public bool IsValid
+        {
+            get
+            {
+                foreach (var property in ValidatedProperties)
+                {
+                    if (GetPropertyError(property) != null)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         private readonly MainWindow mainWindow;
         private readonly bool isNewPart;
         private bool _isOutsourced;
@@ -66,7 +81,9 @@ namespace WGU.C968.InventoryManagement.Views
         public string Error => null;
         public string this[string propertyName] => GetPropertyError(propertyName);
 
-        public AddEditPart(int partId, Inventory inventory)
+        private static readonly string[] ValidatedProperties = { "PartName", "PartCost", "PartCount", "PartMax", "PartMin", "PartVariableValue" };
+
+        public AddEditPart(int partId)
         {
             InitializeComponent();
 
@@ -90,43 +107,57 @@ namespace WGU.C968.InventoryManagement.Views
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (IsOutsourced)
+            if (IsValid)
             {
-                Part = new OutsourcedPart {
-                    PartId = PartId,
-                    Name = PartName,
-                    Price = decimal.Parse(PartCost),
-                    InStock = int.Parse(PartCount),
-                    Max = int.Parse(PartMax),
-                    Min = int.Parse(PartMin),
-                    CompanyName = PartVariableValue
-                };
-            }
-            else
-            {
-                Part = new InhousePart {
-                    PartId = PartId,
-                    Name = PartName,
-                    Price = decimal.Parse(PartCost),
-                    InStock = int.Parse(PartCount),
-                    Max = int.Parse(PartMax),
-                    Min = int.Parse(PartMin),
-                    MachineId = int.Parse(PartVariableValue)
-                };
-            }
+                if (IsOutsourced)
+                {
+                    Part = new OutsourcedPart
+                    {
+                        PartId = PartId,
+                        Name = PartName,
+                        Price = decimal.Parse(PartCost),
+                        InStock = int.Parse(PartCount),
+                        Max = int.Parse(PartMax),
+                        Min = int.Parse(PartMin),
+                        CompanyName = PartVariableValue
+                    };
+                }
+                else
+                {
+                    Part = new InhousePart
+                    {
+                        PartId = PartId,
+                        Name = PartName,
+                        Price = decimal.Parse(PartCost),
+                        InStock = int.Parse(PartCount),
+                        Max = int.Parse(PartMax),
+                        Min = int.Parse(PartMin),
+                        MachineId = int.Parse(PartVariableValue)
+                    };
+                }
 
-            if (isNewPart)
-            {
-                mainWindow.Model.AddPart(Part);
+                if (isNewPart)
+                {
+                    mainWindow.Model.AddPart(Part);
+                }
+                else
+                {
+                    mainWindow.Model.UpdatePart(PartId, Part);
+                }
+
+                this.Close();
+                mainWindow.Parts = mainWindow.GetUpdatedParts();
+                mainWindow.Opacity = 1;
             }
             else
             {
-                mainWindow.Model.UpdatePart(PartId, Part);
+                MessageBox.Show(
+                    "You must correct the part errors before saving.",
+                    "Save Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
-            
-            this.Close();
-            mainWindow.GetUpdatedParts();
-            mainWindow.Opacity = 1;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
