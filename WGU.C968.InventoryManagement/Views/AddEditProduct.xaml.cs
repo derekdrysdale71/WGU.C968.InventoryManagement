@@ -201,7 +201,7 @@ namespace WGU.C968.InventoryManagement.Views
                 }
 
                 this.Close();
-                mainWindow.GetUpdatedProducts();
+                mainWindow.Products = mainWindow.GetUpdatedProducts();
                 mainWindow.Opacity = 1;
             }
             else
