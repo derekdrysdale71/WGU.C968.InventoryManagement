@@ -50,7 +50,7 @@
         <TextBox Text="{Binding Path=Model.ProductSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="ProductSearchTextBox_TextChanged"
                  Name="ProductSearchTextBox" HorizontalAlignment="Right" Margin="0,16,15,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="175" Height="20"
                  Template="{StaticResource PlaceholderTextBox}" Tag="Start typing to search..."/>
-        <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False" Name="ProductsDataGrid" Grid.Row="1" Grid.Column="1" Margin="15,46,15,50">
+        <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" AutoGenerateColumns="False" Name="ProductsDataGrid" Grid.Row="1" Grid.Column="1" Margin="15,46,15,50">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" IsReadOnly="True" Width="Auto" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
@@ -61,11 +61,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="Add" Click="AddProductButton_Click" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,135,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-        <Button Content="Modify" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,75,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-        <Button Content="Delete" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,15,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
-
-
-
+        <Button Content="Modify" Click="ModifyProductButton_Click" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,75,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
+        <Button Content="Delete" Click="DeleteProductButton_Click" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" Margin="0,361,15,0" VerticalAlignment="Top" Width="50" FontSize="14"/>
     </Grid>
-
 </Window>
