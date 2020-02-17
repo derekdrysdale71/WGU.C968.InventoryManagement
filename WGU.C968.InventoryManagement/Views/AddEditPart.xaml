@@ -11,7 +11,7 @@
         Title="Part" Height="425" Width="400" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Window.Resources>
         <helpers:BoolToLabelTextConverter x:Key="BoolToLabelTextConverter" />
-        
+        <helpers:BoolToAddEditPartLabelConverter x:Key="BoolToAddEditLabelText" />
     </Window.Resources>
     <StackPanel >
         <Grid Height="35">
@@ -20,7 +20,8 @@
                 <ColumnDefinition Width="75" />
                 <ColumnDefinition Width="75" />
             </Grid.ColumnDefinitions>
-            <Label Content="Add Part" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" />
+            <Label Content="{Binding IsNewPart, Converter={StaticResource BoolToAddEditLabelText}, FallbackValue='Add Part'}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" />
             <RadioButton Content="In-House" IsChecked="True" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <RadioButton Content="Outsourced" IsChecked="{Binding IsOutsourced}" Grid.Column="2"  HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Grid>

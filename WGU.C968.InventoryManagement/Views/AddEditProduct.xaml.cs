@@ -57,6 +57,12 @@ namespace WGU.C968.InventoryManagement.Views
             set { _parts = value; OnPropertyChanged(nameof(Parts)); }
         }
 
+        public bool IsNewProduct
+        {
+            get { return _isNewProduct; }
+            set { _isNewProduct = value; OnPropertyChanged(nameof(IsNewProduct)); }
+        }
+
         public bool IsValid
         {
             get
@@ -77,7 +83,7 @@ namespace WGU.C968.InventoryManagement.Views
         private readonly MainWindow mainWindow;
         public Inventory CurrentModel { get; set; }
         
-        private readonly bool isNewProduct;
+        private bool _isNewProduct;
         private string _productCount;
         private string _productCost;
         private string _productMax;
@@ -103,7 +109,7 @@ namespace WGU.C968.InventoryManagement.Views
             Product = mainWindow.Model.LookupProduct(productId);
             Parts = mainWindow.GetUpdatedParts();
 
-            isNewProduct = Product == null ? true : false;
+            IsNewProduct = Product == null ? true : false;
 
             ProductId = Product != null ? Product.ProductId : productId;
             ProductName = Product != null ? Product.Name : "";
@@ -163,7 +169,7 @@ namespace WGU.C968.InventoryManagement.Views
         {
             if (IsValid)
             {
-                if (isNewProduct)
+                if (IsNewProduct)
                 {
                     Product = new Product
                     {

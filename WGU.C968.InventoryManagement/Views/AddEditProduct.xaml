@@ -3,16 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:WGU.C968.InventoryManagement.Helpers"
         xmlns:local="clr-namespace:WGU.C968.InventoryManagement.Views"
         mc:Ignorable="d"
         Title="Product" Height="525" Width="850" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Window.Resources>
+        <helpers:BoolToAddEditProductLabelConverter x:Key="BoolToAddEditLabelText" />
+    </Window.Resources>
     <StackPanel Orientation="Horizontal">
         <Grid Width="300">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="400" />
             </Grid.RowDefinitions>
-            <Label Content="Modify Product" Grid.Row="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16" FontWeight="Bold"/>
+            <Label Content="{Binding IsNewProduct, Converter={StaticResource BoolToAddEditLabelText}, FallbackValue='Add Product'}"
+                   Grid.Row="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16" FontWeight="Bold"/>
             <Grid VerticalAlignment="Center" Grid.Row="1" Margin="0,10,0,0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />

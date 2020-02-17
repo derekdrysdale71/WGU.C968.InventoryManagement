@@ -50,6 +50,12 @@ namespace WGU.C968.InventoryManagement.Views
             set { _isOutsourced = value; OnPropertyChanged(nameof(IsOutsourced)); OnPropertyChanged(nameof(PartVariableValue)); } 
         }
 
+        public bool IsNewPart
+        {
+            get { return _isNewPart; }
+            set { _isNewPart = value; OnPropertyChanged(nameof(IsNewPart)); }
+        }
+
         public bool IsValid
         {
             get
@@ -66,7 +72,7 @@ namespace WGU.C968.InventoryManagement.Views
         }
 
         private readonly MainWindow mainWindow;
-        private readonly bool isNewPart;
+        private bool _isNewPart;
         private bool _isOutsourced;
         private string _partMin;
         private string _partCount;
@@ -90,7 +96,7 @@ namespace WGU.C968.InventoryManagement.Views
             mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             Part = mainWindow.Model.LookupPart(partId);
 
-            isNewPart = Part == null ? true : false;
+            IsNewPart = Part == null ? true : false;
             PartId = Part != null ? Part.PartId : partId;
             PartName = Part != null ? Part.Name : "";
             PartCost = Part != null ? Part.Price.ToString() : "";
@@ -136,7 +142,7 @@ namespace WGU.C968.InventoryManagement.Views
                     };
                 }
 
-                if (isNewPart)
+                if (IsNewPart)
                 {
                     mainWindow.Model.AddPart(Part);
                 }
