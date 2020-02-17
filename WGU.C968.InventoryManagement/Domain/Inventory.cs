@@ -42,22 +42,20 @@ namespace WGU.C968.InventoryManagement.Domain
         public bool RemoveProduct(int productId)
         {
             var productToRemove = Products.Where(p => p.ProductId == productId).FirstOrDefault();
-            if (productToRemove == null) return false;
+            if (productToRemove == null) 
+                throw new Exception($"A product with ID #{productId} could not be found.");
 
-            // TODO: Check for associated parts
-
+            // Product cannot be deleted if it has parts associated with it.
+            if (productToRemove.AssociatedParts.Any())
+                throw new Exception("Product has associated parts and cannot be deleted.  Please remove parts first.");
+            
             _products.Remove(productToRemove);
             return true;
         }
 
         public Product LookupProduct(int productId)
         {
-            var product = _products.Where(p => p.ProductId == productId).FirstOrDefault();
-
-            if (product == null) 
-                throw new Exception(message: $"A product with ID #{productId} could not be found.");
-
-            return product;
+            return _products.Where(p => p.ProductId == productId).FirstOrDefault();
         }
 
         public void UpdateProduct(int productId, Product product)
@@ -93,12 +91,7 @@ namespace WGU.C968.InventoryManagement.Domain
 
         public Part LookupPart(int partId)
         {
-            var part = _parts.Where(p => p.PartId == partId).FirstOrDefault();
-
-            /*if (part == null)
-                throw new Exception(message: $"A part with ID #{partId} could not be found.");*/
-
-            return part;
+            return _parts.Where(p => p.PartId == partId).FirstOrDefault();
         }
 
         public void UpdatePart(int partId, Part part)
@@ -150,6 +143,9 @@ namespace WGU.C968.InventoryManagement.Domain
                 CompanyName = "ACME Part Co."
             });
 
+            var associatedParts = new ObservableCollection<Part>();
+            associatedParts.Add(LookupPart(1));
+
             _products.Add(new Product
             {
                 ProductId = 1,
@@ -157,10 +153,9 @@ namespace WGU.C968.InventoryManagement.Domain
                 Price = 15.76m,
                 InStock = 506,
                 Min = 100,
-                Max = 1000
+                Max = 1000,
+                AssociatedParts = associatedParts
             });
-        }
-
-        
+        } 
     }
 }
