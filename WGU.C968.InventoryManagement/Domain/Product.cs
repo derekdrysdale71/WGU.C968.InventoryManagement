@@ -27,7 +27,6 @@ namespace WGU.C968.InventoryManagement.Domain
 
         }
 
-
         public void AddAssociatedPart(Part part)
         {
             AssociatedParts.Add(part);
