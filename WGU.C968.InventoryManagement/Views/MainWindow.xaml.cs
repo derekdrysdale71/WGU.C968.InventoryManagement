@@ -43,20 +43,20 @@ namespace WGU.C968.InventoryManagement.Views
             this.DataContext = this;
 
             Model = new Inventory();
-            GetUpdatedParts();
-            GetUpdatedProducts();
+            Parts = GetUpdatedParts();
+            Products = GetUpdatedProducts();
         }
 
         // Part Actions
         private void PartSearchTextBox_TextChanged(object sender, RoutedEventArgs e)
         {
-            GetUpdatedParts();
+            Parts = GetUpdatedParts();
         }
 
         private void AddPartButton_Click(object sender, RoutedEventArgs e)
         {
             var partId = GetPartIds(Model.Parts).GetNextId();
-            AddEditPart addPartWindow = new AddEditPart(partId, Model);
+            AddEditPart addPartWindow = new AddEditPart(partId);
             addPartWindow.Owner = Window.GetWindow(this);
             Opacity = 0.75;
             addPartWindow.ShowDialog();
@@ -66,7 +66,7 @@ namespace WGU.C968.InventoryManagement.Views
         {
             if (SelectedPart != null)
             {
-                AddEditPart modifyPartWindow = new AddEditPart(SelectedPart.PartId, Model);
+                AddEditPart modifyPartWindow = new AddEditPart(SelectedPart.PartId);
                 modifyPartWindow.Owner = Window.GetWindow(this);
                 Opacity = 0.75;
                 modifyPartWindow.ShowDialog();
@@ -95,9 +95,8 @@ namespace WGU.C968.InventoryManagement.Views
 
                 if (confirm == MessageBoxResult.OK)
                 {
-
                     Model.DeletePart(SelectedPart);
-                    GetUpdatedParts();
+                    Parts = GetUpdatedParts();
                 }
                 else return;
             }
@@ -115,12 +114,13 @@ namespace WGU.C968.InventoryManagement.Views
         // Product Actions
         private void ProductSearchTextBox_TextChanged(object sender, RoutedEventArgs e)
         {
-            GetUpdatedProducts();
+            Products = GetUpdatedProducts();
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            AddEditProduct addProductWindow = new AddEditProduct();
+            var productId = GetProductIds(Model.Products).GetNextId();
+            AddEditProduct addProductWindow = new AddEditProduct(productId, Model);
             addProductWindow.Owner = Window.GetWindow(this);
             Opacity = 0.75;
             addProductWindow.ShowDialog();
@@ -128,7 +128,62 @@ namespace WGU.C968.InventoryManagement.Views
 
         private void ModifyProductButton_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedProduct != null)
+            {
+                AddEditProduct modifyProductWindow = new AddEditProduct(SelectedProduct.ProductId, Model);
+                modifyProductWindow.Owner = Window.GetWindow(this);
+                Opacity = 0.75;
+                modifyProductWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(
+                    "You must select a product to modify.",
+                    "No Product Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+        }
 
+        private void DeleteProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedProduct != null)
+            {
+                var confirm = MessageBox.Show(
+                    "Are you sure you want to delete this product?  This can't be undone.",
+                    "Warning",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning
+                );
+
+                if (confirm == MessageBoxResult.OK)
+                {
+                    try
+                    {
+                        Model.RemoveProduct(SelectedProduct.ProductId);
+                        Products = GetUpdatedProducts();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            ex.Message,
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show(
+                    "You must select a product to delete.",
+                    "No Product Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
         }
 
         // MainWindow Actions
@@ -142,19 +197,19 @@ namespace WGU.C968.InventoryManagement.Views
             return parts.Select(p => p.PartId).ToList();
         }
 
-        private List<int> GetProductIds(ObservableCollection<Product> products)
+        private List<int> GetProductIds(IEnumerable<Product> products)
         {
             return products.Select(p => p.ProductId).ToList();
         }
 
-        public void GetUpdatedParts()
+        public ObservableCollection<Part> GetUpdatedParts()
         {
-            Parts = new ObservableCollection<Part>(Model.Parts);
+            return new ObservableCollection<Part>(Model.Parts);
         }
 
-        public void GetUpdatedProducts()
+        public ObservableCollection<Product> GetUpdatedProducts()
         {
-            Products = new ObservableCollection<Product>(Model.Products);
+           return new ObservableCollection<Product>(Model.Products);
         }
     }
 }
