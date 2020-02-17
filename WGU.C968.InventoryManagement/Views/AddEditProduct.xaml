@@ -99,17 +99,17 @@
             </Grid>
         </Grid>
         <StackPanel Width="550">
-            <Grid Height="200" Width="500" HorizontalAlignment="Center">
+            <Grid Height="200" Width="500" HorizontalAlignment="Right" Margin="0,0,15,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="170" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 <Label Content="All Parts" Name="PartsLabel" HorizontalAlignment="Left" Grid.Row="0" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="DemiBold"/>
                 <Label Content="Search" HorizontalAlignment="Right" Margin="0,13,200,0" Grid.Row="0" VerticalAlignment="Top" FontSize="13" FontWeight="Medium"/>
-                <TextBox Text="{Binding Path=Model.PartSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="PartSearchTextBox_TextChanged"
+                <TextBox Text="{Binding Path=CurrentModel.PartSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="PartSearchTextBox_TextChanged"
                  Name="PartSearchTextBox" HorizontalAlignment="Right" Margin="0,16,15,0" Grid.Row="0" VerticalAlignment="Top" Width="175" Height="20"
                  Template="{StaticResource PlaceholderTextBox}" Tag="Start typing to search..."/>
-                <DataGrid ItemsSource="{Binding AllParts}" SelectedItem="{Binding SelectedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended" SelectionUnit="FullRow" AutoGenerateColumns="False" Name="PartsDataGrid" Grid.Row="0" Margin="15,46,15,0" >
+                <DataGrid ItemsSource="{Binding Parts}" SelectedItem="{Binding SelectedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended" SelectionUnit="FullRow" AutoGenerateColumns="False" Name="PartsDataGrid" Grid.Row="0" Margin="15,46,15,0" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Part ID" Binding="{Binding PartId}" IsReadOnly="True" Width="Auto" />
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
@@ -122,14 +122,14 @@
                 </DataGrid>
                 <Button Content="Add" Name="AddPartButton" Click="AddPartButton_Click" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Margin="0,0,15,0" FontSize="12"/>
             </Grid>
-            <Grid Height="300" Width="500" HorizontalAlignment="Center">
+            <Grid Height="300" Width="500" HorizontalAlignment="Right" Margin="0,0,15,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="220" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 <Label Content="Associated Parts" Name="AssociatedPartsLabel" HorizontalAlignment="Left" Grid.Row="0" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="DemiBold"/>
-                <DataGrid ItemsSource="{Binding AssociatedParts}" SelectedItem="{Binding SelectedAssociatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended" SelectionUnit="FullRow" AutoGenerateColumns="False" Name="AssociatedPartsDataGrid" Grid.Row="0" Margin="15,45,15,0" >
+                <DataGrid ItemsSource="{Binding ProductAssociatedParts}" SelectedItem="{Binding SelectedAssociatedPart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended" SelectionUnit="FullRow" AutoGenerateColumns="False" Name="AssociatedPartsDataGrid" Grid.Row="0" Margin="15,45,15,0" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Part ID" Binding="{Binding PartId}" IsReadOnly="True" Width="Auto" />
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
