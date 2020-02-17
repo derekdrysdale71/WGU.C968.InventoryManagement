@@ -9,6 +9,10 @@ namespace WGU.C968.InventoryManagement.Helpers
     {
         public static int GetNextId(this List<int> ids)
         {
+            if (ids.Count == 0)
+            {
+                return 1;
+            }
             return ids.Max() + 1;
         }
     }
